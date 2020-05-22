@@ -1,0 +1,9 @@
+node_modules/
+firebase.json
+.firebaserc
+.htaccess
+.nginx.conf
+yarn.lock
+build/
+.build/
+webpack/build/
