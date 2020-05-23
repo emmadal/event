@@ -12,7 +12,7 @@ import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { ToastContainer } from 'react-toastify';
-import { ToastSaveSucces, ToastErrorSave } from "../Error/ToastAlert";
+import { ToastSaveSucces, ToastErrorSave } from '../Error/ToastAlert';
 // import EventItem from './EventItem';
 
 
@@ -89,7 +89,6 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-
 export default function EventDialog() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -131,14 +130,14 @@ export default function EventDialog() {
       libelle, petite_description, date_debut, date_fin, status, visibilite
     });
     if (event) ToastSaveSucces();
-    if (!event) ToastErrorSave();
-    console.log('oneEvent: ' + event);
+    else if (!event) ToastErrorSave();
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setOpen(false);
     createEvent();
+    console.log(eventform);
   };
 
   useEffect(() => {

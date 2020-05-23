@@ -78,12 +78,12 @@ export default function EventItem() {
             <Typography variant="body2" component="p">
               Date de debut:
               {' '}
-              {m.date_debut}
+              {new Date(m.date_debut).toLocaleDateString('fr-Fr')}
             </Typography>
             <Typography variant="body2" component="p">
               Date de fin:
               {' '}
-              {m.date_fin}
+              {new Date(m.date_fin).toLocaleDateString('fr-Fr')}
             </Typography>
             <Typography variant="body2" component="p">
               Visibilte:
