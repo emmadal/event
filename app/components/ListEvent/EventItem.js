@@ -9,11 +9,13 @@ import { Settings, DeleteOutline, EditOutlined } from '@material-ui/icons';
 import Typography from '@material-ui/core/Typography';
 import axios from 'axios';
 
+import { ToastDeleteSucces } from '../Error/ToastAlert';
+
 const useStyles = makeStyles({
   root: {
     minWidth: '48%',
     maxWidth: '50%',
-    margin: 10,
+    margin: 5,
   },
   bullet: {
     display: 'inline-block',
@@ -38,10 +40,12 @@ const useStyles = makeStyles({
 });
 
 export default function EventItem() {
+  const classes = useStyles();
+
   const [eventdata, setEventData] = useState([]);
 
   const getAllEvents = async () => {
-    const event = await axios.get('https://factory.buzevent.com/orga/evenements/');
+    const event = await axios.get('https://dev.buzevent.com/orga/evenements');
     setEventData(event.data);
   };
 
@@ -50,11 +54,11 @@ export default function EventItem() {
   }, []);
 
   const deleteOneEvent = async (id) => {
-    await axios.delete(`https://factory.buzevent.com/orga/evenements/${id}`);
+    const res = await axios.delete(`https://dev.buzevent.com/orga/evenements/${id}`);
+    if (res) ToastDeleteSucces();
     getAllEvents();
   };
 
-  const classes = useStyles();
   return (
     <>
       {eventdata.reverse().map((m) => (
@@ -101,7 +105,11 @@ export default function EventItem() {
               <Button size="small" title="Configurer" color="primary">
                 <Settings fontSize="small" />
               </Button>
-              <Button size="small" title="Modifier" color="primary">
+              <Button
+                size="small"
+                title="Modifier"
+                color="primary"
+              >
                 <EditOutlined fontSize="small" color="action" />
               </Button>
               <Button
