@@ -23,11 +23,10 @@ function Evenement(props) {
       </Helmet>
       <PapperBlock
         title={intl.formatMessage(messages.paperTitle)}
-        icon="class-users"
+        // icon="tasks"
         desc={intl.formatMessage(messages.paperSubtitle)}
       >
         {/* <FormattedMessage {...messages.content} /> */}
-        {/* <EventItem /> */}
         <ListEvent />
       </PapperBlock>
     </div>

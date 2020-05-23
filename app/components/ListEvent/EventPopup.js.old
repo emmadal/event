@@ -103,23 +103,23 @@ export default function EventPopup(props) {
             <TextField
               type="date"
               label="Date de debut"
-             
+
               name="date_debut"
               onChange={handleChange}
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
             <TextField
               type="date"
               label="Date de fin"
               name="date_fin"
               onChange={handleChange}
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
             <Button type="submit" color="primary" variant="contained">
               Ajouter
