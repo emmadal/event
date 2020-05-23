@@ -13,8 +13,7 @@ import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { ToastContainer } from 'react-toastify';
 import { ToastSaveSucces, ToastErrorSave } from '../Error/ToastAlert';
-// import EventItem from './EventItem';
-
+import EventItem from './EventItem';
 
 const styles = (theme) => ({
   root: {
@@ -92,7 +91,8 @@ const DialogActions = withStyles((theme) => ({
 export default function EventDialog() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [eventdata, setEventData] = useState([]);
+  const [eventData, setEventData] = useState([]);
+
   const [eventform, setEventForm] = useState({
     libelle: '',
     petite_description: '',
@@ -106,11 +106,6 @@ export default function EventDialog() {
     setOpen(true);
   };
 
-  const getAllEvents = async () => {
-    const event = await axios.get('https://dev.buzevent.com/orga/evenements');
-    setEventData(event.data);
-  };
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -122,27 +117,44 @@ export default function EventDialog() {
     });
   };
 
+  const getAllEvents = async () => {
+    const event = await axios.get('https://dev.buzevent.com/orga/evenements');
+    setEventData(event.data);
+  };
+
   const createEvent = async () => {
     const {
       libelle, petite_description, date_debut, date_fin, status, visibilite
     } = eventform;
-    const event = await axios.post('https://dev.buzevent.com/orga/evenements', {
-      libelle, petite_description, date_debut, date_fin, status, visibilite
-    });
-    if (event) ToastSaveSucces();
-    else if (!event) ToastErrorSave();
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setOpen(false);
-    createEvent();
-    console.log(eventform);
+    try {
+      const event = await axios.post('https://dev.buzevent.com/orga/evenements', {
+        libelle, petite_description, date_debut, date_fin, status, visibilite
+      });
+      getAllEvents();
+      if (event) ToastSaveSucces();
+    } catch (error) {
+      ToastErrorSave();
+    }
   };
 
   useEffect(() => {
     getAllEvents();
   }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setOpen(false);
+    createEvent();
+    setEventForm({
+      libelle: '',
+      petite_description: '',
+      longue_description: null,
+      date_debut: '',
+      date_fin: '',
+      visibilite: '',
+      status: '',
+    });
+  };
 
   return (
     <div>
@@ -240,6 +252,9 @@ export default function EventDialog() {
           </form>
         </DialogContent>
       </Dialog>
+      <div>
+        <EventItem event={eventData} getData={getAllEvents} />
+      </div>
     </div>
   );
 }

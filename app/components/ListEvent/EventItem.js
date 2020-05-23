@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -8,8 +8,7 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { Settings, DeleteOutline, EditOutlined } from '@material-ui/icons';
 import Typography from '@material-ui/core/Typography';
 import axios from 'axios';
-
-import { ToastDeleteSucces } from '../Error/ToastAlert';
+import { ToastDeleteSucces, ToastErrorDelete, } from '../Error/ToastAlert';
 
 const useStyles = makeStyles({
   root: {
@@ -36,32 +35,36 @@ const useStyles = makeStyles({
     flexFlow: 'row wrap',
     justifyContent: 'flex-end',
     alignItems: 'flex-end'
+  },
+  container: {
+    display: 'flex',
+    flexFlow: 'row wrap'
   }
 });
 
-export default function EventItem() {
+export default function EventItem(props) {
+  const { event, getData } = props
   const classes = useStyles();
 
-  const [eventdata, setEventData] = useState([]);
+  // const getAllEvents = async () => {
+  //   const event = await axios.get('https://dev.buzevent.com/orga/evenements');
+  //   setEventData(event.data);
+  // };
 
-  const getAllEvents = async () => {
-    const event = await axios.get('https://dev.buzevent.com/orga/evenements');
-    setEventData(event.data);
-  };
-
-  useEffect(() => {
-    getAllEvents();
-  }, []);
 
   const deleteOneEvent = async (id) => {
-    const res = await axios.delete(`https://dev.buzevent.com/orga/evenements/${id}`);
-    if (res) ToastDeleteSucces();
-    getAllEvents();
+    try {
+      const res = await axios.delete(`https://dev.buzevent.com/orga/evenements/${id}`);
+      if (res) ToastDeleteSucces();
+      getData();
+    } catch (error) {
+      ToastErrorDelete();
+    }
   };
 
   return (
-    <>
-      {eventdata.reverse().map((m) => (
+    <div className={classes.container}>
+      {event.map((m) => (
         <Card className={classes.root} key={m.id}>
           <CardContent>
             <Typography
@@ -86,7 +89,7 @@ export default function EventItem() {
               {new Date(m.date_fin).toLocaleDateString('fr-Fr')}
             </Typography>
             <Typography variant="body2" component="p">
-              Visibilte:
+              Visibilite:
               {' '}
               {m.visibilite}
             </Typography>
@@ -124,6 +127,6 @@ export default function EventItem() {
           </CardActions>
         </Card>
       ))}
-    </>
+    </div>
   );
 }

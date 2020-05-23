@@ -6,8 +6,9 @@ export const ToastSaveSucces = () => {
     autoClose: '3000',
     hideProgressBar: false,
     closeOnClick: true,
+    transition: Zoom,
     pauseOnHover: true,
-    draggable: true
+    draggable: true,
   });
 };
 
@@ -23,24 +24,25 @@ export const ToastDeleteSucces = () => {
   });
 };
 
-
 export const ToastErrorSave = () => {
-  toast.error("Impossible d'enregistrer. Une erreur s'est produite.", {
+  toast.error("Impossible d'enregistrer, une erreur s'est produite. Verifier vos paramètres réseau", {
     position: 'top-right',
     autoClose: '3000',
     hideProgressBar: false,
     closeOnClick: true,
+    transition: Zoom,
     pauseOnHover: true,
     draggable: true,
   });
 };
 
 export const ToastErrorDelete = () => {
-  toast.error('Impossible de supprimer. Verifier votre connexion internet', {
+  toast.error('Impossible de supprimer. Verifier vos paramètres réseau', {
     position: 'top-right',
     autoClose: '5000',
     hideProgressBar: false,
     closeOnClick: true,
+    transition: Zoom,
     pauseOnHover: true,
     draggable: true,
   });
