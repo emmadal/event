@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -8,6 +8,7 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { Settings, DeleteOutline, EditOutlined } from '@material-ui/icons';
 import Typography from '@material-ui/core/Typography';
 import axios from 'axios';
+
 import { ToastDeleteSucces, ToastErrorDelete, } from '../Error/ToastAlert';
 
 const useStyles = makeStyles({
@@ -43,7 +44,7 @@ const useStyles = makeStyles({
 });
 
 export default function EventItem(props) {
-  const { event, getData } = props
+  const { event, getData } = props;
   const classes = useStyles();
 
   // const getAllEvents = async () => {
@@ -64,7 +65,7 @@ export default function EventItem(props) {
 
   return (
     <div className={classes.container}>
-      {event.map((m) => (
+      {event.reverse().map((m) => (
         <Card className={classes.root} key={m.id}>
           <CardContent>
             <Typography

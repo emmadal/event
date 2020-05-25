@@ -12,6 +12,7 @@ import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { ToastContainer } from 'react-toastify';
+import ClipLoader from 'react-spinners/ClipLoader';
 import { ToastSaveSucces, ToastErrorSave } from '../Error/ToastAlert';
 import EventItem from './EventItem';
 
@@ -53,6 +54,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
   },
+  spinner: {
+    display: 'flex',
+    flexFlow: 'column wrap',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 }));
 
 const DialogTitle = withStyles(styles)((props) => {
@@ -253,7 +260,14 @@ export default function EventDialog() {
         </DialogContent>
       </Dialog>
       <div>
-        <EventItem event={eventData} getData={getAllEvents} />
+        {eventData.length === 0 ? (
+          <section className={classes.spinner}>
+            <ClipLoader size={60} color="#03a9f4" loading />
+            <Typography variant="body1">Chargement en cours...</Typography>
+          </section>
+        ) : (
+          <EventItem event={eventData} getData={getAllEvents} />
+        )}
       </div>
     </div>
   );
