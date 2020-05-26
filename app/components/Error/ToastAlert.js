@@ -24,8 +24,44 @@ export const ToastDeleteSucces = () => {
   });
 };
 
+export const ToastUpdateSucces = () => {
+  toast.success('Les données ont ete mis à jour avec succès', {
+    position: 'top-right',
+    autoClose: '3000',
+    hideProgressBar: false,
+    closeOnClick: true,
+    transition: Zoom,
+    pauseOnHover: true,
+    draggable: true
+  });
+};
+
 export const ToastErrorSave = () => {
   toast.error("Impossible d'enregistrer, une erreur s'est produite. Verifier vos paramètres réseau", {
+    position: 'top-right',
+    autoClose: '3000',
+    hideProgressBar: false,
+    closeOnClick: true,
+    transition: Zoom,
+    pauseOnHover: true,
+    draggable: true,
+  });
+};
+
+export const ToastErrorSaveDuplicate = () => {
+  toast.error("Impossible d'enregistrer, Cet evenement existe deja.", {
+    position: 'top-right',
+    autoClose: '3000',
+    hideProgressBar: false,
+    closeOnClick: true,
+    transition: Zoom,
+    pauseOnHover: true,
+    draggable: true,
+  });
+};
+
+export const ToastErrorUpdate = () => {
+  toast.error('La mise à jour a echoué. Verifier vos paramètres réseau', {
     position: 'top-right',
     autoClose: '3000',
     hideProgressBar: false,

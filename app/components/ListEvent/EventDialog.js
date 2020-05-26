@@ -11,9 +11,15 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.min.css';
-import { ToastContainer } from 'react-toastify';
 import ClipLoader from 'react-spinners/ClipLoader';
-import { ToastSaveSucces, ToastErrorSave } from '../Error/ToastAlert';
+import { ToastContainer } from 'react-toastify';
+import {
+  ToastSaveSucces,
+  ToastErrorSave,
+  ToastUpdateSucces,
+  ToastErrorUpdate,
+  ToastErrorSaveDuplicate,
+} from '../Error/ToastAlert';
 import EventItem from './EventItem';
 
 const styles = (theme) => ({
@@ -26,7 +32,7 @@ const styles = (theme) => ({
     right: theme.spacing(1),
     top: theme.spacing(1),
     color: theme.palette.grey[500],
-  }
+  },
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -58,8 +64,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexFlow: 'column wrap',
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 }));
 
 const DialogTitle = withStyles(styles)((props) => {
@@ -92,14 +98,15 @@ const DialogActions = withStyles((theme) => ({
   root: {
     margin: 0,
     padding: theme.spacing(1),
+    width: 'auto',
   },
 }))(MuiDialogActions);
 
 export default function EventDialog() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [eventData, setEventData] = useState([]);
-
+  const [datalength, setDataLength] = useState(0);
   const [eventform, setEventForm] = useState({
     libelle: '',
     petite_description: '',
@@ -109,8 +116,10 @@ export default function EventDialog() {
     visibilite: '',
     status: '',
   });
+
   const handleClickOpen = () => {
     setOpen(true);
+    setModalUpdate(true);
   };
 
   const handleClose = () => {
@@ -129,18 +138,77 @@ export default function EventDialog() {
     setEventData(event.data);
   };
 
+
+  const updateEvent = async (id) => {
+    const existEvent = await axios.get(
+      `https://dev.buzevent.com/orga/evenements/${id}`
+    );
+    const {
+      libelle,
+      petite_description,
+      date_debut,
+      date_fin,
+      status,
+      visibilite,
+    } = existEvent.data;
+    try {
+      setOpen(true);
+      setEventForm({
+        libelle,
+        petite_description,
+        date_debut: new Date(`${date_debut}`).toLocaleDateString('fr-CA'),
+        date_fin: new Date(`${date_fin}`).toLocaleDateString('fr-CA'),
+        status,
+        visibilite,
+      });
+      const _update = await axios.put(`https://dev.buzevent.com/orga/evenements/${id}`, {
+        libelle,
+        petite_description,
+        date_debut,
+        date_fin,
+        status,
+        visibilite,
+      });
+      setDataLength(_update.data);
+      getAllEvents();
+    } catch (err) {
+      ToastErrorUpdate();
+    }
+  };
+
   const createEvent = async () => {
     const {
-      libelle, petite_description, date_debut, date_fin, status, visibilite
+      libelle,
+      petite_description,
+      date_debut,
+      date_fin,
+      status,
+      visibilite,
     } = eventform;
-    try {
-      const event = await axios.post('https://dev.buzevent.com/orga/evenements', {
-        libelle, petite_description, date_debut, date_fin, status, visibilite
-      });
-      getAllEvents();
-      if (event) ToastSaveSucces();
-    } catch (error) {
-      ToastErrorSave();
+    const existEvent = await axios.get(
+      'https://dev.buzevent.com/orga/evenements'
+    );
+    const val = existEvent.data.filter((m) => m.libelle === libelle);
+    if (val.length > 0) {
+      ToastErrorSaveDuplicate();
+    } else {
+      try {
+        const event = await axios.post(
+          'https://dev.buzevent.com/orga/evenements',
+          {
+            libelle,
+            petite_description,
+            date_debut,
+            date_fin,
+            status,
+            visibilite,
+          }
+        );
+        getAllEvents();
+        if (event.status === 200) ToastSaveSucces();
+      } catch (error) {
+        ToastErrorSave();
+      }
     }
   };
 
@@ -151,7 +219,7 @@ export default function EventDialog() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setOpen(false);
-    createEvent();
+    datalength > 0 ? updateEvent() : createEvent();
     setEventForm({
       libelle: '',
       petite_description: '',
@@ -251,22 +319,26 @@ export default function EventDialog() {
                 shrink: true,
               }}
             />
-            <DialogActions className={classes.actions}>
+            <DialogActions>
               <Button type="submit" color="primary" variant="contained">
-                Creer
+                Enregistrer
               </Button>
             </DialogActions>
           </form>
         </DialogContent>
       </Dialog>
       <div>
-        {eventData.length === 0 ? (
-          <section className={classes.spinner}>
-            <ClipLoader size={60} color="#03a9f4" loading />
-            <Typography variant="body1">Chargement en cours...</Typography>
-          </section>
+        {eventData.length > 0 ? (
+          <EventItem
+            event={eventData}
+            getData={getAllEvents}
+            update={updateEvent}
+          />
         ) : (
-          <EventItem event={eventData} getData={getAllEvents} />
+          <section className={classes.spinner}>
+            <ClipLoader size={40} color="#03a9f4" loading />
+            <Typography variant="body2">Chargement en cours...</Typography>
+          </section>
         )}
       </div>
     </div>

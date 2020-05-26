@@ -44,15 +44,12 @@ const useStyles = makeStyles({
 });
 
 export default function EventItem(props) {
-  const { event, getData } = props;
+  const { event, getData, update } = props;
   const classes = useStyles();
 
-  // const getAllEvents = async () => {
-  //   const event = await axios.get('https://dev.buzevent.com/orga/evenements');
-  //   setEventData(event.data);
-  // };
-
-
+  const updateOneEvent = async (id) => {
+    update(id);
+  };
   const deleteOneEvent = async (id) => {
     try {
       const res = await axios.delete(`https://dev.buzevent.com/orga/evenements/${id}`);
@@ -113,6 +110,7 @@ export default function EventItem(props) {
                 size="small"
                 title="Modifier"
                 color="primary"
+                onClick={() => updateOneEvent(m.id)}
               >
                 <EditOutlined fontSize="small" color="action" />
               </Button>
